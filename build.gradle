@@ -33,10 +33,10 @@ project(":core") {
 }
 
 project(":client") {
-    apply plugin: "org.openjfx.javafxplugin"
     apply plugin: "application"
+    apply plugin: "org.openjfx.javafxplugin"
 
-    mainClassName = 'app.SukiPokerClubKt'
+    mainClassName = 'app.SukiPokerClubClientKt'
 
     javafx {
         version = "13"
@@ -45,17 +45,26 @@ project(":client") {
 
     dependencies {
         compile project(":core")
+        compile "io.ktor:ktor-websockets:1.3.1"
+        implementation "io.ktor:ktor-client-websockets:1.3.1"
+        implementation "io.ktor:ktor-client-cio:1.3.1"
     }
 }
 
 project(":server") {
+    apply plugin: "application"
+
+    mainClassName = 'app.SukiPokerClubServerKt'
+
     dependencies {
         compile project(":core")
+        compile "io.ktor:ktor-server-netty:1.3.1"
+        compile "io.ktor:ktor-websockets:1.3.1"
     }
 
     task packageReleaseJar(type: Jar) {
         manifest {
-            attributes 'Main-Class': 'ControllerKt'
+            attributes 'Main-Class': 'app.SukiPokerClubServer.kt'
         }
         archiveName('server-release.jar')
         from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
