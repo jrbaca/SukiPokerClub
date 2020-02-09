@@ -1,0 +1,51 @@
+plugins {
+    id "org.jetbrains.kotlin.jvm" version "1.3.61" apply false
+}
+
+subprojects {
+    apply plugin: "org.jetbrains.kotlin.jvm"
+
+    dependencies {
+        implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    }
+
+    repositories {
+        jcenter()
+    }
+}
+
+project(":core") {
+    dependencies {
+
+    }
+}
+
+project(":client") {
+    dependencies {
+        compile project(":core")
+    }
+
+    task packageReleaseJar(type: Jar) {
+        manifest {
+            attributes 'Main-Class': 'ControllerKt'
+        }
+        archiveName('client-release.jar')
+        from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+        with jar
+    }
+}
+
+project(":server") {
+    dependencies {
+        compile project(":core")
+    }
+
+    task packageReleaseJar(type: Jar) {
+        manifest {
+            attributes 'Main-Class': 'ControllerKt'
+        }
+        archiveName('server-release.jar')
+        from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+        with jar
+    }
+}
