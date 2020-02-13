@@ -1,7 +1,6 @@
 package models
 
 
-import Shared
 import controllers.MainController
 import io.ktor.client.HttpClient
 import io.ktor.client.features.websocket.DefaultClientWebSocketSession
@@ -37,7 +36,8 @@ class ChatModel(private val mainController: MainController) {
                     when (frame) {
                         is Frame.Text -> {
                             val text = frame.readText()
-                            mainController.txtMessageBox.text += text + "\n"
+                            mainController.chatArea.text += text + "\n"
+                            mainController.chatArea.scrollTop = Double.MAX_VALUE
                         }
                     }
                 }
@@ -45,9 +45,15 @@ class ChatModel(private val mainController: MainController) {
         }
     }
 
-    fun sayHello() {
+    fun sendMessage() {
+        val msg = mainController.messageBox.text
+        sendmessageToServer(msg)
+        mainController.messageBox.text = ""
+    }
+
+    private fun sendmessageToServer(msg: String) {
         GlobalScope.launch {
-            chatSocket.send(Frame.Text(Shared.getHello()))
+            chatSocket.send(Frame.Text(msg))
         }
     }
 }
