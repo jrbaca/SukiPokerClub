@@ -4,7 +4,7 @@ package models
 import chat.ChatMessage
 import chat.ConnectMessage
 import chat.CustomFrame
-import controllers.MainController
+import controllers.ChatController
 import io.ktor.client.HttpClient
 import io.ktor.client.features.websocket.DefaultClientWebSocketSession
 import io.ktor.client.features.websocket.WebSockets
@@ -15,7 +15,7 @@ import io.ktor.http.cio.websocket.readBytes
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-class ChatModel(private val mainController: MainController) {
+class ChatModel(private val chatController: ChatController) {
 
     private lateinit var chatSocket: DefaultClientWebSocketSession
 
@@ -33,33 +33,36 @@ class ChatModel(private val mainController: MainController) {
             ) {
                 chatSocket = this
                 send(ConnectMessage().toBinaryFrame())
+                runMessageReceiveLoop()
+            }
+        }
+    }
 
-                while (true) {
-                    val frame = incoming.receive()
-                    when (frame) {
-                        is Frame.Binary -> {
-                            val obj = CustomFrame.convertFromBytes(frame.readBytes())
-                            when (obj) {
-                                is ChatMessage -> {
-                                    val text = obj.message
-                                    mainController.chatArea.text += text + "\n"
-                                    mainController.chatArea.scrollTop = Double.MAX_VALUE
-                                }
-                            }
-                        }
+    private suspend fun runMessageReceiveLoop() {
+        while (true) {
+            when (val frame = chatSocket.incoming.receive()) {
+                is Frame.Binary -> {
+                    when (val frameObject = CustomFrame.convertFromBytes(frame.readBytes())) {
+                        is ChatMessage -> processReceivedChatMessage(frameObject)
                     }
                 }
             }
         }
     }
 
-    fun sendMessage() {
-        val msg = mainController.messageBox.text
-        sendmessageToServer(msg)
-        mainController.messageBox.text = ""
+    private fun processReceivedChatMessage(msg: ChatMessage) {
+        val text = msg.message
+        chatController.chatArea.text += "$text\n"
+        chatController.chatArea.scrollTop = Double.MAX_VALUE
     }
 
-    private fun sendmessageToServer(msg: String) {
+    fun sendMessage() {
+        val msg = chatController.messageBox.text
+        sendChatMessageToServer(msg)
+        chatController.messageBox.text = ""
+    }
+
+    private fun sendChatMessageToServer(msg: String) {
         GlobalScope.launch {
             chatSocket.send(ChatMessage(msg).toBinaryFrame())
         }

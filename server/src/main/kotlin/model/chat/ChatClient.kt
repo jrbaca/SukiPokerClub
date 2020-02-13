@@ -3,7 +3,9 @@ package model.chat
 import io.ktor.http.cio.websocket.DefaultWebSocketSession
 import java.util.concurrent.atomic.AtomicInteger
 
-class ChatClient(val session: DefaultWebSocketSession) {
+class ChatClient(
+    val webSocketSession: DefaultWebSocketSession
+) {
     val id = lastId.getAndIncrement()
     val name = "user$id"
 
