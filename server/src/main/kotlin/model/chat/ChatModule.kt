@@ -1,9 +1,12 @@
 package model.chat
 
+import chat.ChatMessage
+import chat.ConnectMessage
+import chat.CustomFrame
 import io.ktor.application.Application
 import io.ktor.application.install
 import io.ktor.http.cio.websocket.Frame
-import io.ktor.http.cio.websocket.readText
+import io.ktor.http.cio.websocket.readBytes
 import io.ktor.routing.routing
 import io.ktor.websocket.WebSockets
 import io.ktor.websocket.webSocket
@@ -21,17 +24,19 @@ fun Application.chatModule() {
             clients += client
             println("$client joined the chat")
             try {
-                loop@ while (true) {
+                while (true) {
                     val frame = incoming.receive()
                     when (frame) {
-                        is Frame.Text -> {
-                            val text = frame.readText()
-
-                            if (text == "CONNECT") continue@loop
-
-                            val textToSend = "${client.name}: $text"
-                            for (other in clients.toList()) {
-                                other.session.outgoing.send(Frame.Text(textToSend))
+                        is Frame.Binary -> {
+                            val obj = CustomFrame.convertFromBytes(frame.readBytes())
+                            when (obj) {
+                                is ConnectMessage -> {
+                                } // do nothing, already processed it
+                                is ChatMessage -> {
+                                    for (other in clients.toList()) {
+                                        other.session.outgoing.send(frame.copy()) // need to copy it otherwise it will only be able to be received once
+                                    }
+                                }
                             }
                         }
                     }
