@@ -20,7 +20,7 @@ class ChatModel(private val chatController: ChatController) {
     private lateinit var chatSocket: DefaultClientWebSocketSession
 
 
-    fun connectToChat() {
+    fun connectToChat(serverAddress: String) {
         val client = HttpClient {
             install(WebSockets)
         }
@@ -28,7 +28,7 @@ class ChatModel(private val chatController: ChatController) {
         GlobalScope.launch {
             client.ws(
                 method = HttpMethod.Get,
-                host = "127.0.0.1",
+                host = serverAddress,
                 port = 8080, path = "/chat"
             ) {
                 chatSocket = this

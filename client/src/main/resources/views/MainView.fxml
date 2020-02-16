@@ -10,6 +10,9 @@
         <fx:include fx:id="chat" source="ChatView.fxml"/>
 
     </left>
+    <top>
+        <fx:include fx:id="topBar" source="TopBarView.fxml"/>
+    </top>
     <center>
         <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
             <children>
