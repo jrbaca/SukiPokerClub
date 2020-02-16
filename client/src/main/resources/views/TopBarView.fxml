@@ -14,4 +14,7 @@
       <TextField fx:id="txtServerAddress" onAction="#connectToServer" promptText="Server Address" />
       <Button fx:id="connectButton" mnemonicParsing="false" onAction="#connectToServer" text="Connect" />
    </children>
+   <padding>
+      <Insets bottom="0.0" left="5.0" right="5.0" top="5.0" />
+   </padding>
 </HBox>

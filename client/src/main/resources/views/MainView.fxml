@@ -14,10 +14,6 @@
         <fx:include fx:id="topBar" source="TopBarView.fxml"/>
     </top>
     <center>
-        <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
-            <children>
-                <Label text="Other content"/>
-            </children>
-        </VBox>
+        <fx:include fx:id="game" source="GameView.fxml"/>
     </center>
 </BorderPane>

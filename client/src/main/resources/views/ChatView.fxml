@@ -5,23 +5,18 @@
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.*?>
-<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="432.0"
-           xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8"
-           fx:controller="controllers.ChatController">
+<VBox fx:controller="controllers.ChatController" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8"
+      alignment="TOP_CENTER" prefHeight="432.0" prefWidth="309.0" BorderPane.alignment="CENTER">
     <children>
-        <VBox alignment="TOP_CENTER" prefHeight="432.0" prefWidth="309.0" BorderPane.alignment="CENTER">
+        <TextArea fx:id="chatArea" editable="false" maxHeight="1.7976931348623157E308" VBox.vgrow="ALWAYS"/>
+        <Separator minHeight="-Infinity" orientation="VERTICAL" prefHeight="4.0"/>
+        <HBox>
             <children>
-                <TextArea fx:id="chatArea" editable="false" maxHeight="1.7976931348623157E308" VBox.vgrow="ALWAYS"/>
-                <Separator minHeight="-Infinity" orientation="VERTICAL" prefHeight="4.0"/>
-                <HBox>
-                    <children>
-                        <TextField fx:id="messageBox" onAction="#messageBoxEnterPressed" HBox.hgrow="ALWAYS"/>
-                    </children>
-                </HBox>
+                <TextField fx:id="messageBox" onAction="#messageBoxEnterPressed" HBox.hgrow="ALWAYS"/>
             </children>
-            <padding>
-                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
-            </padding>
-        </VBox>
+        </HBox>
     </children>
-</StackPane>
+    <padding>
+        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+    </padding>
+</VBox>

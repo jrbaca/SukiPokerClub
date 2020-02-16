@@ -13,10 +13,13 @@ import java.util.*
 class MainController : Application(), Initializable {
 
     @FXML
+    private lateinit var topBarController: TopBarController // fxml file must have label "topBar" for it to link here
+
+    @FXML
     private lateinit var chatController: ChatController // fxml file must have label "chat" for it to link here
 
     @FXML
-    private lateinit var topBarController: TopBarController // fxml file must have label "topBar" for it to link here
+    private lateinit var gameController: GameController // fxml file must have label "game" for it to link here
 
 
     override fun start(primaryStage: Stage?) {
@@ -35,8 +38,9 @@ class MainController : Application(), Initializable {
 
     override fun initialize(location: URL?, resources: ResourceBundle?) {
         // Link sub controllers
-        chatController.mainController = this
         topBarController.mainController = this
+        chatController.mainController = this
+        gameController.mainController = this
     }
 
     fun startServerConnections(address: String) {
