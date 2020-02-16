@@ -1,6 +1,7 @@
 package models
 
 
+import Shared
 import chat.ChatMessage
 import chat.ConnectMessage
 import chat.CustomFrame
@@ -15,7 +16,9 @@ import io.ktor.http.cio.websocket.readBytes
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-class ChatModel(private val chatController: ChatController) {
+class ChatModel(
+    private val chatController: ChatController
+) {
 
     private lateinit var chatSocket: DefaultClientWebSocketSession
 
@@ -29,7 +32,7 @@ class ChatModel(private val chatController: ChatController) {
             client.ws(
                 method = HttpMethod.Get,
                 host = serverAddress,
-                port = 8080, path = "/chat"
+                port = 8080, path = Shared.CHAT_PATH
             ) {
                 chatSocket = this
                 send(ConnectMessage().toBinaryFrame())
@@ -52,17 +55,11 @@ class ChatModel(private val chatController: ChatController) {
 
     private fun processReceivedChatMessage(msg: ChatMessage) {
         val text = msg.message
-        chatController.chatArea.text += "$text\n"
-        chatController.chatArea.scrollTop = Double.MAX_VALUE
+        chatController.addToChat(text)
+
     }
 
-    fun sendMessage() {
-        val msg = chatController.messageBox.text
-        sendChatMessageToServer(msg)
-        chatController.messageBox.text = ""
-    }
-
-    private fun sendChatMessageToServer(msg: String) {
+    fun sendChatMessageToServer(msg: String) {
         GlobalScope.launch {
             chatSocket.send(ChatMessage(msg).toBinaryFrame())
         }

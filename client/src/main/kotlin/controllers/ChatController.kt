@@ -13,10 +13,10 @@ class ChatController {
 
 
     @FXML
-    lateinit var chatArea: TextArea
+    private lateinit var chatArea: TextArea
 
     @FXML
-    lateinit var messageBox: TextField
+    private lateinit var messageBox: TextField
 
     fun startConnection(serverAddress: String) {
         chatModel.connectToChat(serverAddress)
@@ -24,6 +24,13 @@ class ChatController {
 
     @FXML
     fun messageBoxEnterPressed() {
-        chatModel.sendMessage()
+        val msg = messageBox.text
+        messageBox.text = ""
+        chatModel.sendChatMessageToServer(msg)
+    }
+
+    fun addToChat(str: String) {
+        chatArea.text += "$str\n"
+        chatArea.scrollTop = Double.MAX_VALUE
     }
 }

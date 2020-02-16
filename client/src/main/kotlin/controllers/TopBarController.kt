@@ -9,10 +9,10 @@ class TopBarController {
     lateinit var mainController: MainController
 
     @FXML
-    lateinit var connectButton: Button
+    private lateinit var connectButton: Button
 
     @FXML
-    lateinit var txtServerAddress: TextField
+    private lateinit var txtServerAddress: TextField
 
     @FXML
     private fun connectToServer() {

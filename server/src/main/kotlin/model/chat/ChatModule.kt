@@ -20,7 +20,7 @@ fun Application.chatModule() {
     install(WebSockets)
 
     routing {
-        webSocket("/chat") {
+        webSocket(Shared.CHAT_PATH) {
             val client = ChatClient(this)
             chatClients += client
             println("$client joined the chat")

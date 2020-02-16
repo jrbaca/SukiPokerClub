@@ -8,7 +8,7 @@ class ChatMessage(
 ) : Serializable, CustomFrame {
 
     companion object {
-        private const val serialVersionUID: Long = -90013188L
+        private const val serialVersionUID: Long = -94783021L
     }
 }
 

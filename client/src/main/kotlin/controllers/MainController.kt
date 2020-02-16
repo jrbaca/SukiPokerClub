@@ -16,7 +16,7 @@ class MainController : Application(), Initializable {
     private lateinit var chatController: ChatController // fxml file must have label "chat" for it to link here
 
     @FXML
-    private lateinit var topBarController: TopBarController // fxml file must have label "topbar" for it to link here
+    private lateinit var topBarController: TopBarController // fxml file must have label "topBar" for it to link here
 
 
     override fun start(primaryStage: Stage?) {
