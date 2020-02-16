@@ -15,12 +15,14 @@ import io.ktor.http.cio.websocket.Frame
 import io.ktor.http.cio.websocket.readBytes
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import mu.KotlinLogging
 
 class ChatModel(
     private val chatController: ChatController
 ) {
 
     private lateinit var chatSocket: DefaultClientWebSocketSession
+    private val log = KotlinLogging.logger {}
 
 
     fun connectToChat(serverAddress: String) {
@@ -36,6 +38,7 @@ class ChatModel(
             ) {
                 chatSocket = this
                 send(ConnectMessage().toBinaryFrame())
+                log.info { "Connecting to $serverAddress..." }
                 runMessageReceiveLoop()
             }
         }

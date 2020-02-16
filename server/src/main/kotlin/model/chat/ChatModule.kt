@@ -11,10 +11,12 @@ import io.ktor.http.cio.websocket.readBytes
 import io.ktor.routing.routing
 import io.ktor.websocket.WebSockets
 import io.ktor.websocket.webSocket
+import mu.KotlinLogging
 import java.util.*
 import kotlin.collections.LinkedHashSet
 
 private val chatClients = Collections.synchronizedSet(LinkedHashSet<ChatClient>())
+private val log = KotlinLogging.logger {}
 
 fun Application.chatModule() {
     install(WebSockets)
@@ -23,12 +25,13 @@ fun Application.chatModule() {
         webSocket(Shared.CHAT_PATH) {
             val client = ChatClient(this)
             chatClients += client
-            println("$client joined the chat")
+
+            log.info { "$client joined the chat" }
             try {
                 while (true) waitForMessageAndProcessIt(this)
             } finally {
                 chatClients -= client
-                println("$client left the chat")
+                log.info { "$client left the chat" }
             }
         }
     }
