@@ -1,5 +1,8 @@
-package poker
+package cards
 
+import cards.Card
+import cards.Rank
+import cards.Suit
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.Test

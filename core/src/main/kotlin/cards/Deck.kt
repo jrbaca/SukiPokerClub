@@ -1,4 +1,4 @@
-package poker
+package cards
 
 class Deck {
     private val cards = getRandomCards()

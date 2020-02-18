@@ -4,7 +4,7 @@ package models
 import Shared
 import chat.ChatMessage
 import chat.ConnectMessage
-import chat.CustomFrame
+import chat.CustomWebsocketFrame
 import controllers.ChatController
 import io.ktor.client.HttpClient
 import io.ktor.client.features.websocket.DefaultClientWebSocketSession
@@ -48,7 +48,7 @@ class ChatModel(
         while (true) {
             when (val frame = chatSocket.incoming.receive()) {
                 is Frame.Binary -> {
-                    when (val frameObject = CustomFrame.convertFromBytes(frame.readBytes())) {
+                    when (val frameObject = CustomWebsocketFrame.convertFromBytes(frame.readBytes())) {
                         is ChatMessage -> processReceivedChatMessage(frameObject)
                     }
                 }

@@ -1,8 +1,9 @@
 package model.chat
 
+import Shared
 import chat.ChatMessage
 import chat.ConnectMessage
-import chat.CustomFrame
+import chat.CustomWebsocketFrame
 import io.ktor.application.Application
 import io.ktor.application.install
 import io.ktor.http.cio.websocket.DefaultWebSocketSession
@@ -13,9 +14,9 @@ import io.ktor.websocket.WebSockets
 import io.ktor.websocket.webSocket
 import mu.KotlinLogging
 import java.util.*
-import kotlin.collections.LinkedHashSet
+import kotlin.collections.HashSet
 
-private val chatClients = Collections.synchronizedSet(LinkedHashSet<ChatClient>())
+private val chatClients = Collections.synchronizedSet(HashSet<ChatClient>())
 private val log = KotlinLogging.logger {}
 
 fun Application.chatModule() {
@@ -40,7 +41,7 @@ fun Application.chatModule() {
 private suspend fun waitForMessageAndProcessIt(webSocketSession: DefaultWebSocketSession) {
     when (val frame = webSocketSession.incoming.receive()) {
         is Frame.Binary -> {
-            when (val obj = CustomFrame.convertFromBytes(frame.readBytes())) {
+            when (val obj = CustomWebsocketFrame.convertFromBytes(frame.readBytes())) {
                 is ConnectMessage -> return // do nothing, already processed it
                 is ChatMessage -> processChatMessage(obj)
             }

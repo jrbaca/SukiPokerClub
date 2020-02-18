@@ -6,7 +6,7 @@ import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 import io.ktor.http.cio.websocket.Frame
 
-interface CustomFrame {
+interface CustomWebsocketFrame {
 
     fun toBinaryFrame(): Frame.Binary {
         return Frame.Binary(true, this.convertToBytes())
@@ -23,10 +23,10 @@ interface CustomFrame {
     }
 
     companion object {
-        fun convertFromBytes(bytes: ByteArray): CustomFrame {
+        fun convertFromBytes(bytes: ByteArray): CustomWebsocketFrame {
             ByteArrayInputStream(bytes).use { bis ->
                 ObjectInputStream(bis).use { ois ->
-                    return ois.readObject() as CustomFrame
+                    return ois.readObject() as CustomWebsocketFrame
                 }
             }
         }

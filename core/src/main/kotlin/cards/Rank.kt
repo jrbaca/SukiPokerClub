@@ -1,16 +1,4 @@
-package poker
-
-data class Card(
-    val rank: Rank,
-    val suit: Suit
-)
-
-enum class Suit {
-    SPADE,
-    CLUB,
-    HEART,
-    DIAMOND
-}
+package cards
 
 enum class Rank {
     TWO,
