@@ -8,6 +8,15 @@ subprojects {
 
     dependencies {
         compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+
+        // JUnit5 support
+        testImplementation 'org.junit.jupiter:junit-jupiter-api:5.2.0'
+        testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.2.0'
+
+        // Enable JUnit 5
+        test {
+            useJUnitPlatform()
+        }
     }
 
     repositories {
