@@ -13,10 +13,13 @@ subprojects {
         testImplementation 'org.junit.jupiter:junit-jupiter-api:5.2.0'
         testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.2.0'
 
-        // Enable JUnit 5
-        test {
-            useJUnitPlatform()
-        }
+        // Mocking
+        testCompile group: 'org.mockito', name: 'mockito-core', version: '3.2.4'
+    }
+
+    // Enable JUnit 5
+    test {
+        useJUnitPlatform()
     }
 
     repositories {
@@ -48,7 +51,10 @@ project(":launcher") {
 }
 
 project(":core") {
+//    def arrow_version = "0.10.4"
+
     dependencies {
+        // Ktor for websockets
         compile "io.ktor:ktor-websockets:1.3.1"
 
         // Logging
@@ -57,6 +63,13 @@ project(":core") {
         compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.13.0'
         compile group: 'org.apache.logging.log4j', name: 'log4j-slf4j-impl', version: '2.13.0' // slf4j bridge
         compile 'io.github.microutils:kotlin-logging:1.7.8'
+
+        // Guice for dependency injection
+        implementation group: 'com.google.inject', name: 'guice', version: '4.2.2'
+
+        // Functional programming
+//        implementation "io.arrow-kt:arrow-fx:$arrow_version"
+//        implementation "io.arrow-kt:arrow-syntax:$arrow_version"
     }
 }
 

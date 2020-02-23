@@ -1,22 +1,39 @@
 package cards
 
 class Deck {
-    private val cards = getRandomCards()
+    private val cardQueue: MutableList<Card> = getAllCardsInRandomOrder()
 
+    /**
+     * Removes the card at the top of the deck and returns it. Returns null if no cards left.
+     */
     fun drawCard(): Card? {
         return if (!isEmpty()) {
-            cards.removeAt(0)
+            cardQueue.removeAt(0)
         } else {
             null
         }
     }
 
+    /**
+     * Moves a card to the nth position in the deck. 0 = first, 1 = second, and so on.
+     * @throws DeckEmptyException
+     */
+    fun moveCardToNthPosition(card: Card, position: Int) {
+
+        if (cardQueue.contains(card)) {
+            TODO()
+        } else {
+            throw DeckEmptyException()
+        }
+    }
+
     fun isEmpty(): Boolean {
-        return cards.isEmpty()
+        return cardQueue.isEmpty()
     }
 
     companion object {
-        private fun getRandomCards(): MutableList<Card> {
+
+        private fun getAllCardsInRandomOrder(): MutableList<Card> {
             val cards = mutableListOf<Card>()
 
             val allCards = mutableSetOf<Card>()
