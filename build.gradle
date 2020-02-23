@@ -14,11 +14,37 @@ subprojects {
         testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.2.0'
 
         // Mocking
-        testCompile group: 'org.mockito', name: 'mockito-core', version: '3.2.4'
+        testCompile group: 'org.mockito', name: 'mockito-inline', version: '3.3.0'
+
     }
+
+    sourceSets {
+        testInteg {
+            compileClasspath += sourceSets.main.output
+            runtimeClasspath += sourceSets.main.output
+        }
+    }
+
+    configurations {
+        testIntegImplementation.extendsFrom testImplementation
+        testIntegRuntimeOnly.extendsFrom testRuntimeOnly
+    }
+
+    task integrationTest(type: Test) {
+        description = 'Runs integration tests.'
+        group = 'verification'
+
+        testClassesDirs = sourceSets.testInteg.output.classesDirs
+        classpath = sourceSets.testInteg.runtimeClasspath
+        shouldRunAfter test
+    }
+    check.dependsOn integrationTest
 
     // Enable JUnit 5
     test {
+        useJUnitPlatform()
+    }
+    integrationTest {
         useJUnitPlatform()
     }
 
@@ -35,25 +61,29 @@ subprojects {
     compileTestKotlin {
         kotlinOptions.jvmTarget = "1.8"
     }
-
 }
 
-project(":launcher") {
-    task packageReleaseJar(type: Jar) {
-        manifest {
-            attributes 'Main-Class': 'MainKt'
-        }
-        archiveName("Suki's Poker Club.jar")
-        from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
-        with jar
+project(":eventdrivengame") {
+    dependencies {
+        implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.3' // Multithreading
+        implementation "org.jetbrains.kotlin:kotlin-reflect" // Reflection
+
+        // Dependency injection
+        implementation group: 'com.google.inject', name: 'guice', version: '4.2.2'
+        implementation group: 'com.google.inject.extensions', name: 'guice-assistedinject', version: '4.2.2'
+
+        // Logging
+        implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.30'
+        implementation 'io.github.microutils:kotlin-logging:1.7.8'
     }
-    packageReleaseJar.dependsOn(build)
 }
 
 project(":core") {
 //    def arrow_version = "0.10.4"
 
     dependencies {
+        implementation project(":eventdrivengame")
+
         // Ktor for websockets
         compile "io.ktor:ktor-websockets:1.3.1"
 
@@ -70,6 +100,17 @@ project(":core") {
         // Functional programming
 //        implementation "io.arrow-kt:arrow-fx:$arrow_version"
 //        implementation "io.arrow-kt:arrow-syntax:$arrow_version"
+    }
+}
+
+project(":server") {
+    apply plugin: "application"
+
+    mainClassName = 'app.SukiPokerClubServerKt'
+
+    dependencies {
+        implementation project(":core")
+        implementation "io.ktor:ktor-server-netty:1.3.1"
     }
 }
 
@@ -90,13 +131,14 @@ project(":client") {
     }
 }
 
-project(":server") {
-    apply plugin: "application"
-
-    mainClassName = 'app.SukiPokerClubServerKt'
-
-    dependencies {
-        implementation project(":core")
-        implementation "io.ktor:ktor-server-netty:1.3.1"
+project(":launcher") {
+    task packageReleaseJar(type: Jar) {
+        manifest {
+            attributes 'Main-Class': 'MainKt'
+        }
+        archiveName("Suki's Poker Club.jar")
+        from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+        with jar
     }
+    packageReleaseJar.dependsOn(build)
 }
