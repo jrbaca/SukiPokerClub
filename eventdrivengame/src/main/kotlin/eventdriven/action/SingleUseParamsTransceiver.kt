@@ -8,7 +8,7 @@ import kotlinx.coroutines.runBlocking
  */
 internal class SingleUseParamsTransceiver {
 
-    private val channel = Channel<Array<out Any>>(0)
+    private val channel = Channel<Array<out Any>>(1)
 
     /**
      * Receives params, blocking until one has been produced.
@@ -20,12 +20,9 @@ internal class SingleUseParamsTransceiver {
     }
 
     /**
-     * Sends params, blocking until it has been consumed.
+     * Sends params. Only the first invocation of this across all threads will be received.
      */
     fun sendParams(args: Array<out Any>) {
-        // TODO implement this differently. This could block for extremely long periods.
-        runBlocking {
-            channel.send(args)
-        }
+        channel.offer(args)
     }
 }
